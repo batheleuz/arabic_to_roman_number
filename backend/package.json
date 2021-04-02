@@ -1,5 +1,5 @@
 {
-  "name": "mass.test.joimoi.com",
+  "name": "backend",
   "version": "1.0.0",
   "description": "Test numeral romain",
   "main": "index.js",
@@ -20,8 +20,6 @@
   "devDependencies": {
     "@babel/core": "^7.13.14",
     "@babel/node": "^7.13.13",
-    "@babel/preset-env": "^7.13.12",
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "@babel/preset-env": "^7.13.12"
   }
 }

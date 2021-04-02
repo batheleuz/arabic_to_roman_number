@@ -8,22 +8,51 @@ export default class Home extends Component {
     state = {
         showAlert : false,
         arabicNumber : 0,
-        romanNumeral : null,
+        alertColor: 'success',
+        alertMessage: null,
     }
 
     async getNumeralRoman() {
-        const response = await axios({
-            method : 'GET',
-            baseURL : API_URL,
-            url : 'numeral-romain/' + this.state.arabicNumber,
-            async : true,
-            crossDomain : true,
-          });
 
-        this.setState({
-            showAlert : true,
-            romanNumeral : response.data.numeralRoman,
-        })
+        if (false === this.validateNumber()) {
+            return;
+        }
+
+        try {
+            const response = await axios({
+                method : 'GET',
+                baseURL : API_URL,
+                url : 'numeral-romain/' + this.state.arabicNumber,
+                async : true,
+                crossDomain : true,
+            });
+
+            this.setState({
+                showAlert : true,
+                alertColor : 'success',
+                alertMessage : 'numeral roman : ' + response.data.numeralRoman,
+            })
+        } catch (e) {
+            this.setState({
+                showAlert : true,
+                alertColor : 'danger',
+                alertMessage : 'server is not responding',
+            })
+        }
+    }
+
+    validateNumber() {
+        if (100 < this.state.arabicNumber) {
+            this.setState({
+                showAlert : true,
+                alertColor : 'warning',
+                alertMessage : 'Choose a number between 0 et 100',
+            })
+
+            return false;
+        }
+
+        return true;
     }
 
     render() {
@@ -35,7 +64,7 @@ export default class Home extends Component {
                 <Col sm={6}>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Arabic number</Form.Label>
-                        <Form.Control type="number" placeholder="Nombre à transformer" onChange={(e) => this.setState({arabicNumber : e.target.value})} />
+                        <Form.Control type="number" max={100} min={1} placeholder="Nombre à transformer" onChange={(e) => this.setState({arabicNumber : e.target.value})} />
                     </Form.Group>
                 </Col>
             </Row>
@@ -43,10 +72,10 @@ export default class Home extends Component {
                 <Col sm={6}>
                 {
                     this.state.showAlert 
-                    ? <Alert variant="success" onClose={() => this.setState({showAlert : false })} dismissible>
-                        <Alert.Heading> Roman numeral </Alert.Heading>
+                    ? <Alert variant={this.state.alertColor} onClose={() => this.setState({showAlert : false })} dismissible>
+                        <Alert.Heading> Message </Alert.Heading>
                         <hr/>
-                        <h3> {this.state.romanNumeral} </h3>
+                        <h3> { this.state.alertMessage } </h3>
                     </Alert> 
                     : null
                 }
